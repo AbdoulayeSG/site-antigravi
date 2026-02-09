@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Plateforme de vente en ligne - Créez votre compte et vendez vos produits facilement">
+  <title>MarketPlace - Vendez vos Produits</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="logo">🛍️ MarketPlace</div>
+      <nav id="nav">
+        <!-- Navigation dynamique -->
+      </nav>
+    </div>
+  </header>
+
+  <!-- Messages -->
+  <div id="message-container"></div>
+
+  <!-- Vue: Page d'Accueil -->
+  <div id="home-view" class="view active">
+    <div class="hero">
+      <h1>Vendez & Achetez en Toute Simplicité</h1>
+      <p>Créez votre compte vendeur, ajoutez vos produits et laissez vos clients vous contacter directement via WhatsApp
+      </p>
+      <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+        <button class="btn btn-primary" onclick="app.showView('login')">Se Connecter</button>
+        <button class="btn btn-secondary" onclick="app.showView('register')">Créer un Compte</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2 class="text-center mb-3" style="font-size: 2rem;">Produits Disponibles</h2>
+      <div id="home-products" class="products-grid">
+        <!-- Produits chargés dynamiquement -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Vue: Inscription -->
+  <div id="register-view" class="view">
+    <div class="container" style="max-width: 500px; padding-top: 3rem;">
+      <div class="card">
+        <h2 class="text-center mb-2" style="font-size: 2rem;">Créer un Compte Vendeur</h2>
+        <p class="text-center mb-3" style="color: var(--text-secondary);">Rejoignez notre plateforme et commencez à
+          vendre</p>
+
+        <form id="register-form" onsubmit="app.register(event)">
+          <div class="form-group">
+            <label for="register-name">Nom complet</label>
+            <input type="text" id="register-name" placeholder="Votre nom" required>
+          </div>
+
+          <div class="form-group">
+            <label for="register-email">Email</label>
+            <input type="email" id="register-email" placeholder="votre@email.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="register-whatsapp">Numéro WhatsApp</label>
+            <input type="tel" id="register-whatsapp" placeholder="+225 XX XX XX XX XX" required pattern="[+]?[0-9\s]+"
+              title="Format: +225 XX XX XX XX XX ou numéro international">
+            <small style="color: var(--text-muted); font-size: 0.85rem;">
+              Ce numéro sera utilisé par défaut pour vos produits
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="register-password">Mot de passe</label>
+            <input type="password" id="register-password" placeholder="Minimum 6 caractères" required minlength="6">
+          </div>
+
+          <div class="form-group">
+            <label for="register-password-confirm">Confirmer le mot de passe</label>
+            <input type="password" id="register-password-confirm" placeholder="Confirmer votre mot de passe" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+            Créer mon Compte
+          </button>
+        </form>
+
+        <p class="text-center mt-2" style="color: var(--text-secondary);">
+          Déjà un compte ? <a href="#" onclick="app.showView('login'); return false;"
+            style="color: var(--primary); text-decoration: none;">Se connecter</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vue: Connexion -->
+  <div id="login-view" class="view">
+    <div class="container" style="max-width: 500px; padding-top: 3rem;">
+      <div class="card">
+        <h2 class="text-center mb-2" style="font-size: 2rem;">Connexion</h2>
+        <p class="text-center mb-3" style="color: var(--text-secondary);">Accédez à votre espace vendeur</p>
+
+        <form id="login-form" onsubmit="app.login(event)">
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="votre@email.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Mot de passe</label>
+            <input type="password" id="login-password" placeholder="Votre mot de passe" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+            Se Connecter
+          </button>
+        </form>
+
+        <p class="text-center mt-2" style="color: var(--text-secondary);">
+          Pas encore de compte ? <a href="#" onclick="app.showView('register'); return false;"
+            style="color: var(--primary); text-decoration: none;">Créer un compte</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vue: Tableau de Bord -->
+  <div id="dashboard-view" class="view">
+    <div class="container">
+      <div class="dashboard-header">
+        <div>
+          <h2>Mon Espace Vendeur</h2>
+          <p style="color: var(--text-secondary); margin-top: 0.5rem;">Gérez vos produits et suivez vos ventes</p>
+        </div>
+        <div class="user-info">
+          <div class="user-name" id="user-name-display"></div>
+          <div class="user-whatsapp" id="user-whatsapp-display"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="app.showView('add-product')">
+          ➕ Ajouter un Produit
+        </button>
+        <button class="btn btn-secondary" onclick="app.showView('home')">
+          🏠 Voir le Catalogue
+        </button>
+      </div>
+
+      <h3 style="margin-bottom: 1.5rem;">Mes Produits</h3>
+      <div id="my-products-list" class="my-products-list">
+        <!-- Produits du vendeur -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Vue: Ajouter/Éditer un Produit -->
+  <div id="add-product-view" class="view">
+    <div class="container" style="max-width: 700px; padding-top: 2rem;">
+      <div class="card">
+        <h2 class="mb-2" id="product-form-title">Ajouter un Nouveau Produit</h2>
+
+        <form id="product-form" onsubmit="app.saveProduct(event)">
+          <input type="hidden" id="product-id">
+
+          <div class="form-group">
+            <label for="product-name">Nom du produit</label>
+            <input type="text" id="product-name" placeholder="Ex: iPhone 14 Pro" required>
+          </div>
+
+          <div class="form-group">
+            <label for="product-description">Description</label>
+            <textarea id="product-description" placeholder="Décrivez votre produit en détail..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="product-price">Prix (FCFA)</label>
+            <input type="number" id="product-price" placeholder="Ex: 500000" required min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="product-whatsapp">Numéro WhatsApp pour ce produit</label>
+            <input type="tel" id="product-whatsapp" placeholder="+225 XX XX XX XX XX" required pattern="[+]?[0-9\s]+"
+              title="Format: +225 XX XX XX XX XX ou numéro international">
+            <small style="color: var(--text-muted); font-size: 0.85rem;">
+              Par défaut, c'est votre numéro principal. Vous pouvez le modifier pour ce produit.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="product-image">Image du produit</label>
+            <input type="file" id="product-image" accept="image/*" onchange="app.previewImage(event)">
+            <div id="image-preview" style="margin-top: 1rem; display: none;">
+              <img id="preview-img" style="max-width: 100%; border-radius: var(--radius-md);">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-success" style="flex: 1;">
+              💾 Enregistrer
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="app.cancelProductEdit()">
+              ❌ Annuler
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getDatabase, ref, set, get, push, remove, onValue, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+    import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+
+    // Configuration Firebase de votre projet
+    const firebaseConfig = {
+      apiKey: "AIzaSyDPPtTVs9XJjouh_m77MrMFtRuEweN6SkQ",
+      authDomain: "sitedynamique2-0.firebaseapp.com",
+      databaseURL: "https://sitedynamique2-0-default-rtdb.firebaseio.com",
+      projectId: "sitedynamique2-0",
+      storageBucket: "sitedynamique2-0.firebasestorage.app",
+      messagingSenderId: "627403418205",
+      appId: "1:627403418205:web:25afa60652c157d2b53bb4",
+      measurementId: "G-W5G538DC1G"
+    };
+
+    // Initialize Firebase
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+    const database = getDatabase(firebaseApp);
+    const storage = getStorage(firebaseApp);
+
+    // Make Firebase available globally
+    window.firebase = {
+      auth,
+      database,
+      storage,
+      authMethods: {
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut,
+        onAuthStateChanged
+      },
+      dbMethods: {
+        ref,
+        set,
+        get,
+        push,
+        remove,
+        onValue,
+        update
+      },
+      storageMethods: {
+        storageRef,
+        uploadString,
+        getDownloadURL
+      }
+    };
+  </script>
+  <script src="app.js"></script>
+</body>
+
+</html>
