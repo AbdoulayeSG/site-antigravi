@@ -15,10 +15,24 @@
   <!-- Header -->
   <header>
     <div class="header-content">
-      <div class="logo">🛍️ Yombleh</div>
+      <div class="logo" onclick="app.showView('home')" style="cursor: pointer;">🛍️ Yombleh</div>
+      
+      <!-- Barre de recherche -->
+      <div class="search-bar">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" id="search-input" placeholder="Rechercher des produits..." onkeyup="app.searchProducts(event)">
+        <button class="search-clear" id="search-clear" onclick="app.clearSearch()" style="display: none;">×</button>
+      </div>
+      
       <nav id="nav">
         <!-- Navigation dynamique -->
       </nav>
+      <div class="header-icons" id="header-icons">
+        <!-- Icônes de connexion/inscription (masquées si connecté) -->
+      </div>
     </div>
   </header>
 
@@ -27,17 +41,45 @@
 
   <!-- Vue: Page d'Accueil -->
   <div id="home-view" class="view active">
-    <div class="hero">
-      <h1>Bienvenue sur Yombleh</h1>
-      <p>La marketplace qui connecte vendeurs et acheteurs via WhatsApp</p>
-      <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-        <button class="btn btn-primary" onclick="app.showView('login')">Se Connecter</button>
-        <button class="btn btn-secondary" onclick="app.showView('register')">Créer un Compte</button>
+    <!-- Carrousel Promotionnel -->
+    <div class="promo-carousel">
+      <div class="carousel-container">
+        <div class="carousel-slide active">
+          <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&h=400&fit=crop" alt="Promo 1">
+          <div class="carousel-overlay">
+            <h2>Offres Exceptionnelles</h2>
+            <p>Découvrez nos meilleures promotions</p>
+          </div>
+        </div>
+        <div class="carousel-slide">
+          <img src="https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=1200&h=400&fit=crop" alt="Promo 2">
+          <div class="carousel-overlay">
+            <h2>Nouveautés du Moment</h2>
+            <p>Les derniers produits ajoutés</p>
+          </div>
+        </div>
+        <div class="carousel-slide">
+          <img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?w=1200&h=400&fit=crop" alt="Promo 3">
+          <div class="carousel-overlay">
+            <h2>Vendez Facilement</h2>
+            <p>Rejoignez notre plateforme dès maintenant</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation Carrousel -->
+      <button class="carousel-btn carousel-prev" onclick="app.carouselPrev()">‹</button>
+      <button class="carousel-btn carousel-next" onclick="app.carouselNext()">›</button>
+      
+      <!-- Indicateurs -->
+      <div class="carousel-indicators">
+        <span class="indicator active" onclick="app.carouselGoTo(0)"></span>
+        <span class="indicator" onclick="app.carouselGoTo(1)"></span>
+        <span class="indicator" onclick="app.carouselGoTo(2)"></span>
       </div>
     </div>
 
     <div class="container">
-      <h2 class="text-center mb-3" style="font-size: 2rem;">Produits Disponibles</h2>
       <div id="home-products" class="products-grid">
         <!-- Produits chargés dynamiquement -->
       </div>
@@ -190,10 +232,10 @@
           </div>
 
           <div class="form-group">
-            <label for="product-image">Image du produit</label>
-            <input type="file" id="product-image" accept="image/*" onchange="app.previewImage(event)">
-            <div id="image-preview" style="margin-top: 1rem; display: none;">
-              <img id="preview-img" style="max-width: 100%; border-radius: var(--radius-md);">
+            <label for="product-images">Images du produit (plusieurs images possibles)</label>
+            <input type="file" id="product-images" accept="image/*" multiple onchange="app.previewImages(event)">
+            <div id="images-preview" class="image-upload-preview">
+              <!-- Aperçu des images -->
             </div>
           </div>
 
@@ -223,8 +265,8 @@
         <div class="product-gallery">
           <div class="main-image-container">
             <img id="detail-main-image" src="" alt="Produit" class="detail-main-image">
-            <button class="gallery-nav gallery-prev" onclick="app.previousImage()">‹</button>
-            <button class="gallery-nav gallery-next" onclick="app.nextImage()">›</button>
+            <button class="gallery-nav gallery-prev" onclick="app.previousImage()" id="gallery-prev-btn">‹</button>
+            <button class="gallery-nav gallery-next" onclick="app.nextImage()" id="gallery-next-btn">›</button>
           </div>
           <div class="thumbnails-container" id="detail-thumbnails">
             <!-- Miniatures générées dynamiquement -->
@@ -256,6 +298,102 @@
           <!-- Suggestions générées dynamiquement -->
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Vue: Admin Panel -->
+  <div id="admin-view" class="view">
+    <div class="container" style="padding-top: 2rem;">
+      <div class="admin-header">
+        <h1>🔐 Panel Administrateur</h1>
+        <button class="btn btn-danger" onclick="app.adminLogout()">Déconnexion Admin</button>
+      </div>
+
+      <!-- Tabs Admin -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="app.showAdminTab('users')">👥 Utilisateurs</button>
+        <button class="admin-tab" onclick="app.showAdminTab('products')">📦 Produits</button>
+        <button class="admin-tab" onclick="app.showAdminTab('carousel')">🎨 Carrousel</button>
+      </div>
+
+      <!-- Tab: Utilisateurs -->
+      <div id="admin-users-tab" class="admin-tab-content active">
+        <h2 style="margin-bottom: 1.5rem;">Gestion des Utilisateurs</h2>
+        
+        <div class="admin-filters">
+          <button class="filter-btn active" onclick="app.filterUsers('all')">Tous</button>
+          <button class="filter-btn" onclick="app.filterUsers('pending')">En attente</button>
+          <button class="filter-btn" onclick="app.filterUsers('approved')">Approuvés</button>
+          <button class="filter-btn" onclick="app.filterUsers('banned')">Bannis</button>
+        </div>
+
+        <div id="admin-users-list" class="admin-list">
+          <!-- Liste des utilisateurs -->
+        </div>
+      </div>
+
+      <!-- Tab: Produits -->
+      <div id="admin-products-tab" class="admin-tab-content">
+        <h2 style="margin-bottom: 1.5rem;">Gestion des Produits</h2>
+        <div id="admin-products-list" class="admin-list">
+          <!-- Liste des produits -->
+        </div>
+      </div>
+
+      <!-- Tab: Carrousel -->
+      <div id="admin-carousel-tab" class="admin-tab-content">
+        <h2 style="margin-bottom: 1.5rem;">Gestion du Carrousel Promotionnel</h2>
+        
+        <div class="card" style="margin-bottom: 2rem;">
+          <h3 style="margin-bottom: 1rem;">Ajouter/Modifier une Slide</h3>
+          <form id="carousel-form" onsubmit="app.saveCarouselSlide(event)">
+            <input type="hidden" id="slide-index">
+            
+            <div class="form-group">
+              <label>Titre</label>
+              <input type="text" id="slide-title" placeholder="Ex: Offres Exceptionnelles" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" id="slide-description" placeholder="Ex: Découvrez nos meilleures promotions" required>
+            </div>
+            
+            <div class="form-group">
+              <label>URL de l'image</label>
+              <input type="url" id="slide-image" placeholder="https://..." required>
+              <small style="color: var(--text-muted);">Recommandé: 1200x400px minimum</small>
+            </div>
+            
+            <button type="submit" class="btn btn-success">💾 Enregistrer</button>
+            <button type="button" class="btn btn-secondary" onclick="app.resetCarouselForm()">Annuler</button>
+          </form>
+        </div>
+
+        <h3 style="margin-bottom: 1rem;">Slides Actuelles</h3>
+        <div id="carousel-slides-list" class="carousel-slides-list">
+          <!-- Liste des slides -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Login Admin -->
+  <div id="admin-login-modal" class="modal">
+    <div class="modal-content">
+      <h2 style="margin-bottom: 1.5rem;">🔐 Connexion Administrateur</h2>
+      <form id="admin-login-form" onsubmit="app.adminLogin(event)">
+        <div class="form-group">
+          <label>Email Admin</label>
+          <input type="email" id="admin-email" placeholder="admin@yombleh.com" required>
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" id="admin-password" placeholder="Mot de passe admin" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Se Connecter</button>
+        <button type="button" class="btn btn-secondary" onclick="app.closeAdminModal()" style="width: 100%; margin-top: 1rem;">Annuler</button>
+      </form>
     </div>
   </div>
 
