@@ -4,9 +4,9 @@
   /* Couleurs principales - Orange professionnel */
   --primary: hsl(20, 100%, 60%);
   --primary-dark: hsl(20, 100%, 50%);
-  --primary-light: hsl(20, 100%, 70%);
+  --primary-light: hsl(20, 100%, 50%);
 
-  --secondary: hsl(28, 100%, 65%);
+  --secondary: hsl(20, 100%, 50%);
   --secondary-dark: hsl(28, 100%, 55%);
 
   --accent: hsl(15, 100%, 58%);
